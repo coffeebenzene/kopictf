@@ -90,3 +90,6 @@ def validate_rsa(message, signature, rsa_pub):
     signature = int.from_bytes(signature, "big")
     h2 = rsa.core.decrypt_int(signature, rsa_pub.e, rsa_pub.n)
     return h==h2
+
+# Utility functions
+inverse_mod = rsa.common.inverse
