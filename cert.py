@@ -63,22 +63,21 @@ class Certificate():
 
 
 # sign_hash function should convert str to int.
-hash_length = 64//8
-sign_hash = lambda msg : int.from_bytes(hashlib.sha256(msg.encode("UTF-8")).digest()[:hash_length], "big") # 64bits of SHA256 as int. !!Use sha256 for testing.!!
+sha64 = lambda msg : int.from_bytes(hashlib.sha256(msg.encode("UTF-8")).digest()[:hash_length], "big") # 64bits of SHA256 as int. !!Use sha256 for testing.!!
 
-def sign_rsa(message, rsa_pri):
+def sign_rsa(message, rsa_pri, sign_hash=sha64):
     """message : str
        rsa_pri : rsa.PrivateKey
        outputs: signature (str)
     """
     h = sign_hash(message)
     signature = rsa.core.encrypt_int(h, rsa_pri.d, rsa_pri.n)
-    signature = signature.to_bytes(hash_length, "big")
+    signature = signature.to_bytes(rsa_pri.n.bit_length(), "big")
     signature = base64.b64encode(signature)
     signature = signature.decode("ASCII")
     return signature
 
-def validate_rsa(message, signature, rsa_pub):
+def validate_rsa(message, signature, rsa_pub, sign_hash=sha64):
     """message : str
        signature : b64encoded str
        rsa_pri : rsa.PublicKey
