@@ -80,7 +80,7 @@ def sign_rsa(message, rsa_pri):
 
 def validate_rsa(message, signature, rsa_pub):
     """message : str
-       signature : b64encoded bytes
+       signature : b64encoded str
        rsa_pri : rsa.PublicKey
        outputs: boolean (True if valid)
     """
