@@ -3,7 +3,7 @@ import re
 
 (A_public_key, A_private_key) = rsa.newkeys(2048)
 (B_public_key, B_private_key) = rsa.newkeys(2048)
-(CA_public_key, CA_private_key) = rsa.newkeys(256)
+(CA_public_key, CA_private_key) = rsa.newkeys(64)
 
 f_A = open("A.txt","w")
 f_A.write(str(A_public_key)+"\n")
