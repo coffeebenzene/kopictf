@@ -3,7 +3,7 @@ from socket import *
 HOST = gethostname()
 B_PORT = 2335
 A_PORT = 2334
-BUFFSIZE = 1024
+BUFFSIZE = 4096
 
 B_ADDR = (HOST, B_PORT)
 A_ADDR = (HOST, A_PORT)
