@@ -113,9 +113,8 @@ class Handler(BaseRequestHandler):
 
 if __name__ == '__main__':
     HOST = gethostname()
-    PORT = 2335
+    PORT = 37590
     ADDR = (HOST,PORT)
     server = ThreadingTCPServer(ADDR,Handler)
     print('listening')
     server.serve_forever()
-    print(server)
