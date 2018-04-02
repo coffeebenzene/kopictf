@@ -97,5 +97,36 @@ def validate_rsa(message, signature, rsa_pub):
     h2 = rsa.core.decrypt_int(signature, rsa_pub.e, rsa_pub.n)
     return h==h2
 
+def signed_json(data_dict, rsa_pri, cert):
+    """data_dict : dict of fields to sign. 
+                   Keys of dict must be strings.
+                   "cert" and "signature" keys not allowed.
+                   Values of dict must be either int or str.
+       rsa_pri : Primary key to sign with
+       cert : certificate containing public key corresponding to primary key.
+       return : json_dict (str) containing signature and cert fields.
+    """
+    for k,v in data_dict.items():
+        if not isinstance(k, str):
+            raise ValueError("Invalid key, key is not string: {} : {}".format(k,v))
+        if not isinstance(v, (int, str)):
+            raise ValueError("Invalid value, must be int, str: {} : {}".format(k,v))
+        if k in ("cert", "signature"):
+            raise ValueError("Invalid key, 'cert' and 'signature' not allowed: {} : {}".format(k,v))
+    
+    msg_to_sign = json.dumps(data_dict, sort_keys=True)
+    signature = sign_rsa(msg_to_sign, rsa_pri)
+    json_dict = data_dict.copy()
+    json_dict["signature"] = signature
+    json_dict["cert"] = cert.as_dict()
+    return json.dumps(json_dict, sort_keys=True)
+
+def read_signed_json(json_dict):
+    """json_dict : json dict as a str
+       return : dict containing all fields of json_dict.
+       DOES NOT VALIDATE.
+    """
+    return json.loads(json_dict)
+
 # Utility functions
 inverse_mod = rsa.common.inverse
