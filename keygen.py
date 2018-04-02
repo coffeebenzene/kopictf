@@ -1,6 +1,9 @@
 import rsa
 import cert
 
+import time
+start = time.time()
+
 A_pub, A_pri = rsa.newkeys(2048)
 print("generated A's keys")
 B_pub, B_pri = rsa.newkeys(2048)
@@ -24,17 +27,19 @@ print("Written B's keys")
 
 CA_cert = cert.Certificate("Certificate Authority", CA_pub, None)
 CA_cert.sign(CA_pri)
-CA_cert.save("CA.crt")
+CA_cert.save("ca.crt")
 print("Written CA's keys")
 # CA private key is not saved. Go factor yourself.
 
 print("Testing...")
 A_cert_test = cert.Certificate.load("alice.crt")
 B_cert_test = cert.Certificate.load("bob.crt")
-CA_cert_test = cert.Certificate.load("CA.crt")
+CA_cert_test = cert.Certificate.load("ca.crt")
 A_valid = A_cert_test.validate(CA_cert_test.rsa_pub)
 print("A valid: {}".format(A_valid))
 B_valid = B_cert_test.validate(CA_cert_test.rsa_pub)
 print("B valid: {}".format(B_valid))
 CA_valid = CA_cert_test.validate(CA_cert_test.rsa_pub)
 print("CA valid: {}".format(CA_valid))
+
+print(time.time() - start)
