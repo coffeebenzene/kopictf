@@ -1,6 +1,7 @@
 from socketserver import BaseRequestHandler, ThreadingTCPServer
 import socket
 import json
+import random
 import time
 
 import rsa
@@ -14,6 +15,17 @@ BOB_CERT = cert.Certificate.load("bob.crt")
 with open("bob.pem","rb") as f:
     BOB_PRI = rsa.PrivateKey.load_pkcs1(f.read())
 
+# List of image replies
+IMAGE_DB = [
+    "cat", "dog", "bird", "fish", "horse", "duck", "ant",
+    "apple", "orange", "pineapple", "watermelon", "pear",
+    "car", "plane", "truck", "person", "train", "ship", "bus",
+    "cake", "curry rice", "steak", "This makes me hungry...",
+    "sushi", "nasi lemak", "chicken rice", "laksa",
+    "cthulhu", "nyarlathotep", "MY EYES THEY BURN", "I don't know",
+]
+random.seed(0)
+random.shuffle(IMAGE_DB)
 
 
 class Handler(BaseRequestHandler):
@@ -51,8 +63,17 @@ class Handler(BaseRequestHandler):
             req_id = int(req_id)
             
             # Send 4th message B to A: reply for image ####
+            if req_id != 7258:
+                image_id = req_id % len(IMAGE_DB)
+                image_reply = IMAGE_DB[image_id]
+            else:
+                image_reply = "KopiCTF{101_percent_pure_acidicbaside}"
+            ciphertext_reply, iv = dhke.aes256_dhke_encrypt(dh_key, image_reply)
+            data = {"reply":ciphertext_reply, "iv":iv}
+            json_data = json.dumps(data, sort_keys=True)
+            sock.send(json_data.encode("utf-8"))
             
-            print(req_id)
+            print("{} : {}".format(req_id, image_reply))
         except Exception as e:
             error = str(e)
             error = json.dumps({"error":error}).encode("utf-8")

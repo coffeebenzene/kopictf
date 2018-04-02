@@ -53,8 +53,11 @@ class Handler(BaseRequestHandler):
             sock.send(json_data.encode("utf-8"))
             
             # Receive 4th message B to A: reply for image ####
+            json_data = sock.recv()
+            data = json.loads(json_data)
+            image_reply = dhke.aes256_dhke_decrypt(dh_key, data["reply"], data["iv"])
             
-            print(req_id)
+            print("{} : {}".format(req_id, image_reply))
         except Exception as e:
             error = str(e)
             error = json.dumps({"error":error}).encode("utf-8")
