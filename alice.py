@@ -70,7 +70,7 @@ class Handler(BaseRequestHandler):
 
 
 if __name__ == '__main__':
-    HOST = "localhost"
+    HOST = socket.gethostname()
     PORT = 64127
     ADDR = (HOST,PORT)
     server = ThreadingTCPServer(ADDR,Handler)

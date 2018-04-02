@@ -8,7 +8,8 @@ This module "simulates" a router, but it's actually the one making connections.
 That's all.
 """
 
-HOST = "localhost"
+# HOST = socket.gethostname() # For local testing.
+HOST = "ec2-13-250-112-26.ap-southeast-1.compute.amazonaws.com"
 ALICE_ADDR = (HOST, 64127)
 BOB_ADDR = (HOST, 37590)
 
