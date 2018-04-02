@@ -27,12 +27,11 @@ class Certificate():
                                   )
         return str_self
     
-    def json(self):
-        cert_json = {"subject_principal": self.subject_principal,
-                     "rsa_pub": self.rsa_pub.save_pkcs1().decode("ASCII"),
-                     "signature": self.signature,
-                    }
-        return json.dumps(cert_json)
+    def as_dict(self):
+        return {"subject_principal": self.subject_principal,
+                "rsa_pub": self.rsa_pub.save_pkcs1().decode("ASCII"),
+                "signature": self.signature,
+               }
     
     def as_msg(self):
         return self.subject_principal + "|" + self.rsa_pub.save_pkcs1().decode("ASCII")
@@ -54,16 +53,12 @@ class Certificate():
         return cls(**cert_json)
     
     def save(self, filename):
-        cert_json = {"subject_principal": self.subject_principal,
-                     "rsa_pub": self.rsa_pub.save_pkcs1().decode("ASCII"),
-                     "signature": self.signature,
-                    }
         with open(filename,"w") as f:
-            json.dump(cert_json, f)
+            json.dump(self.as_dict(), f)
 
 
 # sign_hash function should convert str to int.
-sha64 = lambda msg : int.from_bytes(hashlib.sha256(msg.encode("UTF-8")).digest()[:hash_length], "big") # 64bits of SHA256 as int. !!Use sha256 for testing.!!
+sha64 = lambda msg : int.from_bytes(hashlib.sha256(msg.encode("UTF-8")).digest()[:8], "big") # 64bits (8bytes) of SHA256 as int. !!Use sha256 for testing.!!
 
 def sign_rsa(message, rsa_pri, sign_hash=sha64):
     """message : str
