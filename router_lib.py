@@ -37,7 +37,8 @@ class Router(object):
         # Source and destinations are created by router, not set by sender.
         raw_msg = None
         while raw_msg is None: # Take care of suprious receive.
-            ready, _, _ = select.select(self.sock.values(), [], [])
+            # Allow timeout in select to allow interrupts.
+            ready, _, _ = select.select(self.sock.values(), [], [], 10)
             for s in ready:
                 raw_msg = s.recv()
                 if raw_msg is not None:
