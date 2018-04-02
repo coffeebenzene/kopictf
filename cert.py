@@ -2,7 +2,6 @@ import json
 import base64
 
 import rsa
-#import present
 import hashlib
 
 class Certificate():
@@ -57,28 +56,41 @@ class Certificate():
             json.dump(self.as_dict(), f)
 
 
-# sign_hash function should convert str to int.
-sha64 = lambda msg : int.from_bytes(hashlib.sha256(msg.encode("UTF-8")).digest()[:8], "big") # 64bits (8bytes) of SHA256 as int. !!Use sha256 for testing.!!
+# sign_hash is hash function for signing. Should convert str to int.
+def sign_hash(msg):
+    msg_bytes = msg.encode("UTF-8")
+    h_bytes = hashlib.sha256(msg_bytes).digest()
+    h = int.from_bytes(h_bytes, "big")
+    return h
 
-def sign_rsa(message, rsa_pri, sign_hash=sha64):
+def bit_to_bytes(i):
+    """i : number of bits
+       return : number of bytes that fit i bits. (i.e. divide by 8, rounded up)
+    """
+    return (i+7)//8
+
+def sign_rsa(message, rsa_pri):
     """message : str
        rsa_pri : rsa.PrivateKey
-       outputs: signature (str)
+       return : signature (str)
     """
     h = sign_hash(message)
+    h = h % rsa_pri.n # Fit into modulus keyspace
     signature = rsa.core.encrypt_int(h, rsa_pri.d, rsa_pri.n)
-    signature = signature.to_bytes(rsa_pri.n.bit_length(), "big")
+    size = bit_to_bytes(rsa_pri.n.bit_length())
+    signature = signature.to_bytes(size, "big")
     signature = base64.b64encode(signature)
     signature = signature.decode("ASCII")
     return signature
 
-def validate_rsa(message, signature, rsa_pub, sign_hash=sha64):
+def validate_rsa(message, signature, rsa_pub):
     """message : str
        signature : b64encoded str
-       rsa_pri : rsa.PublicKey
-       outputs: boolean (True if valid)
+       rsa_pub : rsa.PublicKey
+       return: boolean (True if valid)
     """
     h = sign_hash(message)
+    h = h % rsa_pub.n # Fit into modulus keyspace
     signature = signature.encode("ASCII")
     signature = base64.b64decode(signature)
     signature = int.from_bytes(signature, "big")
