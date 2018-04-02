@@ -55,6 +55,7 @@ class Handler(BaseRequestHandler):
             
             # Receive 4th message B to A: reply for image ####
             json_data = sock.recv()
+            json_data = json_data.decode("utf-8")
             data = json.loads(json_data)
             image_reply = dhke.aes256_dhke_decrypt(dh_key, data["reply"], data["iv"])
             
