@@ -1,5 +1,8 @@
 import os
 import hashlib
+import base64
+
+from Crypto.Cipher import AES
 
 # Use fixed p and g from RFC 3526, 8192-bit MODP Group, id 18.
 # RFC 3526 recommends 380 to 620 bit exponent sizes for this group. Using 640 bit.
@@ -23,3 +26,49 @@ class DHKey(object):
             raise Exception("Shared key not generated yet")
         gab_bytes = self.gab.to_bytes(1024, "big")
         return hashlib.sha256(gab_bytes).digest()
+
+BLOCKSIZE = 16 # AES block size is 128bit = 16 bytes
+
+def pkcs7_pad(bytes_msg):
+    # Negative modulo to find out number of bytes remaining
+    padsize = (-len(bytes_msg)) % BLOCKSIZE
+    if padsize == 0:
+        padsize = BLOCKSIZE
+    padding = bytes([padsize]) * padsize
+    return bytes_msg + padding
+
+def pkcs7_unpad(bytes_msg):
+    padsize = bytes_msg[-1]
+    return bytes_msg[:-padsize]
+
+def aes256_dhke_encrypt(dh_key, plaintext):
+    """plaintext : str
+       returns : (ciphertext, iv) ciphertext and iv are both b64 encoded str
+    """
+    plaintext = plaintext.encode("UTF-8")
+    plaintext = pkcs7_pad(plaintext)
+    key = dh_key.sha256_shared()
+    iv = os.urandom(16)
+    
+    aes_cipher = AES.new(key, AES.MODE_CBC, iv)
+    ciphertext = aes_cipher.encrypt(plaintext)
+    
+    ciphertext = base64.b64encode(ciphertext).decode("UTF-8")
+    iv = base64.b64encode(iv).decode("UTF-8")
+    return ciphertext, iv
+
+def aes256_dhke_decrypt(dh_key, ciphertext, iv):
+    """ciphertext : str (b64 encoded)
+       in : str (b64 encoded)
+       returns : plaintext, str
+    """
+    ciphertext = base64.b64decode(ciphertext.encode("UTF-8"))
+    key = dh_key.sha256_shared()
+    iv = base64.b64decode(iv.encode("UTF-8"))
+    
+    aes_cipher = AES.new(key, AES.MODE_CBC, iv)
+    plaintext = aes_cipher.decrypt(ciphertext)
+    
+    plaintext = pkcs7_unpad(plaintext)
+    plaintext = plaintext.decode("UTF-8")
+    return plaintext
