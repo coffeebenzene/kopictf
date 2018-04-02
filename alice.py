@@ -32,6 +32,7 @@ class Handler(BaseRequestHandler):
             
             # Receive 2nd message B to A: gb
             signed_json = sock.recv()
+            signed_json = signed_json.decode("utf-8")
             signed_data = json.loads(signed_json)
             
             bob_cert = cert.Certificate(**signed_data["cert"])

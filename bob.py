@@ -35,6 +35,7 @@ class Handler(BaseRequestHandler):
         try:
             # Receive 1st message A to B: p, g, ga
             signed_json = sock.recv()
+            signed_json = signed_json.decode("utf-8")
             signed_data = json.loads(signed_json)
             
             alice_cert = cert.Certificate(**signed_data["cert"])
@@ -54,6 +55,7 @@ class Handler(BaseRequestHandler):
             
             # Receive 3rd message A to B: request for image ####
             json_data = sock.recv()
+            json_data = json_data.decode("utf-8")
             data = json.loads(json_data)
             req = dhke.aes256_dhke_decrypt(dh_key, data["request"], data["iv"])
             req_start = "can i please have image#"
