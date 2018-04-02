@@ -1,6 +1,10 @@
 import router_lib
 import cert
 
+import json
+
+CA_CERT = cert.Certificate.load("CA.crt")
+
 router = router_lib.Router() # Initialise router. Don't change.
 
 if __name__ == "__main__":
@@ -12,10 +16,8 @@ if __name__ == "__main__":
         print("source: {}".format(msg.source))
         print("dest: {}".format(msg.dest))
         # msg.msg is json encoded.
-        # Pretty printing it as an example:
-        import json # bad practice! import at the top!
-        msg_dict = cert.read_signed_json(msg.msg)
+        msg_dict = json.loads(msg.msg)
         print("msg:")
-        print(json.dumps(msg_dict, indent=4, sort_keys=True))
+        print(json.dumps(msg_dict, indent=4, sort_keys=True)) # pretty print
         
         router.send(msg)
