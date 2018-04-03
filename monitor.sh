@@ -2,10 +2,8 @@
 
 # remember to chmod +x this file.
 # Use crontab -e, add
-# * * * * * ~/host/monitor.sh >> ~/host/monitor.log
+# * * * * * cd $(pwd) && monitor.sh >> monitor.log 2>&1
 # Use crontab -r to clear crontab.
-
-cd ~/host
 
 for entity in alice bob; do
     if ! pgrep -xf "python3 $entity.py"  > /dev/null; # If process not running
