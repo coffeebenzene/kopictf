@@ -14,7 +14,8 @@ CA_CERT = cert.Certificate.load("CA.crt")
 class Attack():
     """Attack state machine. Welcome to libdw~
        Inherit this to make an Attacker. We've done this for you.
-       (Or make your own way to attack, feel free to)
+       (Or make your own way to attack, feel free to. Our suggestion may not
+        be the optimal way.)
        
        states are called step here.
        
