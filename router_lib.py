@@ -3,13 +3,17 @@ import select
 import json
 
 __message = """@KopiCTF participants:
-If you are reading this, please note that NOTHING in this module is meant to be
+If you are reading this, please note that NOTHING in this module should be
 changed. Doing so may break the challenge (not in a good way).
 This module "simulates" a router, but it's actually the one making connections.
 That's all.
+You don't necessarily need to understand this module to complete the challenge.
+
+btw. cert.py and dhke.py also shouldn't be changed. But it might be nice to 
+understand what they do.
 """
 
-# HOST = socket.gethostname() # For local testing.
+#HOST = socket.gethostname() # For local testing.
 HOST = "ec2-13-250-112-26.ap-southeast-1.compute.amazonaws.com"
 ALICE_ADDR = (HOST, 64127)
 BOB_ADDR = (HOST, 37590)
