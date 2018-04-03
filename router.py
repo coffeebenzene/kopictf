@@ -1,6 +1,8 @@
-import router_lib
+import rsa
+
 import cert
 import dhke
+import router_lib
 
 CA_CERT = cert.Certificate.load("CA.crt")
 # Example to load pem file (rsa private key)
@@ -8,14 +10,14 @@ CA_CERT = cert.Certificate.load("CA.crt")
 #    MAN_PRI = rsa.PrivateKey.load_pkcs1(f.read())
 
 class Attack():
-    """Attack conversation state machine. Welcome to libdw~
-       Inhert this to make a Attacker. We've done this for you.
-       (Or make your own method to attack, feel free to).
+    """Attack state machine. Welcome to libdw~
+       Inherit this to make an Attacker. We've done this for you.
+       (Or make your own way to attack, feel free to)
        
        states are called step here.
        
        In a step X, the functon stepX() will be run.
-       stepX() functions should take in 1 argument, msg (router_lib.Message object)
+       stepX() functions should take in 1 argument, msg
        stepX() functions should output 2 values, (modified_msg, next_step)
     """
     def __init__(self):
@@ -48,20 +50,22 @@ if __name__ == "__main__":
     while True:
         msg = router.listen()
         
-        # Insert your code here. Example code given to simply print the msg.
+        # Insert your code here, or modify the AliceAttack and BobAttack classes.
+        # Example code given to simply print the msg.
         print("-"*79)
         print("source: {}".format(msg.source))
         print("dest: {}".format(msg.dest))
-        # msg.msg is a dict. Pretty print as example
+        # msg.msg is a dict. Keys MUST be str, values MUST be int or str.
+        # Pretty print as example
         import pprint
         print("msg:")
         pprint.pprint(msg.msg)
+        # example modification
+        # msg.msg["new_field"] = 123
         
         if msg.source == "A":
-            print("Spoofing Alice")
             msg = alice_attack.handle_msg(msg)
         elif msg.source == "B":
-            print("Spoofing Bob")
             msg = bob_attack.handle_msg(msg)
         
         if msg is not None:
