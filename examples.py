@@ -2,6 +2,7 @@ import rsa
 
 import cert
 import dhke
+import router_lib
 
 ### rsa library documentation : https://stuvel.eu/python-rsa-doc/index.html
 ### Example : Generate a RSA key pair.
@@ -105,3 +106,13 @@ ciphertext, iv = dhke.aes256_dhke_encrypt(a_dhkey, "Hello! This is a test messag
 # send ciphertext to B here...
 plaintext = dhke.aes256_dhke_decrypt(b_dhkey, ciphertext, iv) # B's key
 print(plaintext)
+
+
+
+### Example : Create message to send on router
+router = router_lib.Router()
+source = "A"
+dest = "B"
+data = {"field1":123, "field2":"value"}
+msg = router_lib.Message(source, dest, data)
+router.send(msg)
