@@ -4,6 +4,8 @@ import cert
 import dhke
 import router_lib
 
+# To exit router after running it, press ctrl c and wait up to 10s.
+
 CA_CERT = cert.Certificate.load("CA.crt")
 # Example to load pem file (rsa private key)
 #with open("man.pem","rb") as f:
