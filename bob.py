@@ -37,12 +37,16 @@ class Handler(BaseRequestHandler):
             signed_json = sock.recv()
             signed_json = signed_json.decode("utf-8")
             signed_data = json.loads(signed_json)
+            if "error" in signed_data:
+                raise Exception("Received error, exiting!")
             
             alice_cert = cert.Certificate(**signed_data["cert"])
             if not alice_cert.validate(CA_CERT.rsa_pub):
                 raise Exception("Certificate attached has an invalid signature!")
             if not alice_cert.subject_principal == "Alice":
                 raise Exception("Certificate attached doesn't belong to Alice!")
+            if not cert.validate_signed_dict(signed_data):
+                raise Exception("Signature is invalid! (Data was modified?)")
             
             dh_key = dhke.DHKey(p=signed_data["p"], g=signed_data["g"])
             dh_key.compute_shared(signed_data["ga"])
@@ -57,6 +61,9 @@ class Handler(BaseRequestHandler):
             json_data = sock.recv()
             json_data = json_data.decode("utf-8")
             data = json.loads(json_data)
+            if "error" in data:
+                raise Exception("Received error, exiting!")
+            
             req = dhke.aes256_dhke_decrypt(dh_key, data["request"], data["iv"])
             req_start = "can i please have image#"
             if not req.lower().startswith(req_start):
@@ -77,6 +84,7 @@ class Handler(BaseRequestHandler):
             
             print("{} : {}".format(req_id, image_reply), flush=True)
         except Exception as e:
+            import traceback
             traceback.print_exc()
             error = str(e)
             error = json.dumps({"error":error}).encode("utf-8")

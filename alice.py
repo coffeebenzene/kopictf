@@ -35,12 +35,16 @@ class Handler(BaseRequestHandler):
             signed_json = sock.recv()
             signed_json = signed_json.decode("utf-8")
             signed_data = json.loads(signed_json)
+            if "error" in signed_data:
+                raise Exception("Received error, exiting!")
             
             bob_cert = cert.Certificate(**signed_data["cert"])
             if not bob_cert.validate(CA_CERT.rsa_pub):
                 raise Exception("Certificate attached has an invalid signature!")
             if not bob_cert.subject_principal == "Bob":
                 raise Exception("Certificate attached doesn't belong to Bob!")
+            if not cert.validate_signed_dict(signed_data):
+                raise Exception("Signature is invalid! (Data was modified?)")
             
             dh_key.compute_shared(signed_data["gb"])
             
@@ -58,10 +62,13 @@ class Handler(BaseRequestHandler):
             json_data = sock.recv()
             json_data = json_data.decode("utf-8")
             data = json.loads(json_data)
+            if "error" in data:
+                raise Exception("Received error, exiting!")
             image_reply = dhke.aes256_dhke_decrypt(dh_key, data["reply"], data["iv"])
             
             print("{} : {}".format(req_id, image_reply), flush=True)
         except Exception as e:
+            import traceback
             traceback.print_exc()
             error = str(e)
             error = json.dumps({"error":error}).encode("utf-8")
