@@ -25,11 +25,12 @@ bob_cert.sign(CA_pri)
 bob_cert.save("bob.crt")
 print("Written B's keys")
 
+with open("ca.pem","wb") as f:
+    f.write(CA_pri.save_pkcs1())
 CA_cert = cert.Certificate("Certificate Authority", CA_pub, None)
 CA_cert.sign(CA_pri)
 CA_cert.save("ca.crt")
 print("Written CA's keys")
-# CA private key is not saved. Go factor yourself.
 
 print("Testing...")
 A_cert_test = cert.Certificate.load("alice.crt")
