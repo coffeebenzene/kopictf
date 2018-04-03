@@ -75,8 +75,9 @@ class Handler(BaseRequestHandler):
             json_data = json.dumps(data, sort_keys=True)
             sock.send(json_data.encode("utf-8"))
             
-            print("{} : {}".format(req_id, image_reply))
+            print("{} : {}".format(req_id, image_reply), flush=True)
         except Exception as e:
+            traceback.print_exc()
             error = str(e)
             error = json.dumps({"error":error}).encode("utf-8")
             sock.send(error)
@@ -91,5 +92,5 @@ if __name__ == '__main__':
     PORT = 37590
     ADDR = (HOST,PORT)
     server = ThreadingTCPServer(ADDR,Handler)
-    print('listening')
+    print('listening', flush=True)
     server.serve_forever()

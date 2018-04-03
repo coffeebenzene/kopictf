@@ -3,6 +3,7 @@ import socket
 import json
 import random
 import time
+import traceback
 
 import rsa
 
@@ -59,8 +60,9 @@ class Handler(BaseRequestHandler):
             data = json.loads(json_data)
             image_reply = dhke.aes256_dhke_decrypt(dh_key, data["reply"], data["iv"])
             
-            print("{} : {}".format(req_id, image_reply))
+            print("{} : {}".format(req_id, image_reply), flush=True)
         except Exception as e:
+            traceback.print_exc()
             error = str(e)
             error = json.dumps({"error":error}).encode("utf-8")
             sock.send(error)
@@ -75,5 +77,5 @@ if __name__ == '__main__':
     PORT = 64127
     ADDR = (HOST,PORT)
     server = ThreadingTCPServer(ADDR,Handler)
-    print('listening')
+    print('listening', flush=True)
     server.serve_forever()
