@@ -67,6 +67,17 @@ class Message(object):
         self.source = source
         self.dest = dest
         self.msg = msg_data
+    
+    def __repr__(self):
+        template = ('Message(\n'
+                   '  source={},\n'
+                   '  dest={},\n'
+                   '  msg={}\n)')
+        str_self = template.format(repr(self.source),
+                                   repr(self.dest),
+                                   repr(self.msg),
+                                  )
+        return str_self
 
 class SocketWrapper(object):
     def __init__(self, s):
