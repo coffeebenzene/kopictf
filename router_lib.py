@@ -1,5 +1,6 @@
 import socket
 import select
+import json
 
 __message = """@KopiCTF participants:
 If you are reading this, please note that NOTHING in this module is meant to be
@@ -45,21 +46,23 @@ class Router(object):
                 if raw_msg is not None:
                     sock = s
                     break
-        msg = Message(sock.source, sock.dest, raw_msg)
+        msg_data = json.loads(raw_msg.decode("utf-8"))
+        msg = Message(sock.source, sock.dest, msg_data)
         return msg
     
     def send(self,  msg):
         sock = self.sock[msg.dest]
-        sock.send(msg.msg)
+        raw_msg = json.dumps(msg.msg).encode("utf-8")
+        sock.send(raw_msg)
 
 class Message(object):
     """ Represents a message (packet) sent to the router.
-        Fields: source, dest, msg
+        Fields: source, dest, msg (dict of data)
     """
-    def __init__(self, source, dest, msg):
+    def __init__(self, source, dest, msg_data):
         self.source = source
         self.dest = dest
-        self.msg = msg
+        self.msg = msg_data
 
 class SocketWrapper(object):
     def __init__(self, s):

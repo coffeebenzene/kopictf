@@ -1,13 +1,13 @@
 import router_lib
 import cert
-
-import json
+import dhke
 
 CA_CERT = cert.Certificate.load("CA.crt")
 
-router = router_lib.Router() # Initialise router. Don't change.
 
 if __name__ == "__main__":
+    router = router_lib.Router() # Initialise router. Don't change.
+    
     while True:
         msg = router.listen()
         
@@ -15,9 +15,9 @@ if __name__ == "__main__":
         print("-"*79)
         print("source: {}".format(msg.source))
         print("dest: {}".format(msg.dest))
-        # msg.msg is json encoded.
-        msg_dict = json.loads(msg.msg)
+        # msg.msg is a dict. Pretty print as example
+        import pprint
         print("msg:")
-        print(json.dumps(msg_dict, indent=4, sort_keys=True)) # pretty print
+        pprint.pprint(msg.msg)
         
         router.send(msg)
