@@ -27,7 +27,7 @@ print("Written B's keys")
 
 with open("ca.pem","wb") as f:
     f.write(CA_pri.save_pkcs1())
-CA_cert = cert.Certificate("Certificate Authority", CA_pub, None)
+CA_cert = cert.Certificate("Cognitive Accomplice", CA_pub, None)
 CA_cert.sign(CA_pri)
 CA_cert.save("ca.crt")
 print("Written CA's keys")
