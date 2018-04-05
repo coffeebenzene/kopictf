@@ -55,14 +55,8 @@ if __name__ == "__main__":
         
         # Insert your code here, or modify the AliceAttack and BobAttack classes.
         # Example code given to simply print the msg.
-        print("-"*79)
-        print("source: {}".format(msg.source))
-        print("dest: {}".format(msg.dest))
-        # msg.msg is a dict. Keys MUST be str, values MUST be int or str.
-        # Pretty print as example
-        import pprint
-        print("msg:")
-        pprint.pprint(msg.msg)
+        print("-"*80)
+        print(msg)
         # example modification
         # msg.msg["new_field"] = 123
         

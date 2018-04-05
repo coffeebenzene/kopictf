@@ -5,11 +5,36 @@ import dhke
 import router_lib
 
 ### rsa library documentation : https://stuvel.eu/python-rsa-doc/index.html
-### Example : Generate a RSA key pair.
+### Example : Create keys directly
+n = 123
+e = 2
+d = 3
+p = 4  # rsa library validates that p and q are relatively prime,
+q = 5  # but does not validate p*q = n.
+       # p and q are just for reference, not be used in calculation.
+       # only n, e, d are used.
+       # To ignore, just use p=2 and q=3.
+private_key = rsa.PrivateKey(n, e, d, p, q) # includes public key values
+public_key = rsa.PublicKey(n, e)
+
+
+
+### Example : Generate a (valid) RSA key pair.
 public_key, private_key = rsa.newkeys(64) # argument is bit size of key
 # keys can be printed.
 print(public_key)
 print(private_key)
+
+
+
+### Example : encryption and decryption. Do not use rsa.encrypt() or rsa.decrypt()
+# Note: Encryption and decryption are already done 
+#       automatically in signing/validation functions below.
+plaintext = 100
+ciphertext = rsa.core.encrypt_int(plaintext, public_key.e, public_key.n)
+decrypted = rsa.core.decrypt_int(ciphertext, private_key.d, private_key.n)
+print(decrypted)
+print(decrypted == plaintext)
 
 
 
@@ -23,6 +48,9 @@ with open("example_private.pem","wb") as f:
 with open("example_private.pem","rb") as f:
     private_key = rsa.PrivateKey.load_pkcs1(f.read())
 
+
+
+### Example : Encrypt with rsa (even with invalid )
 
 
 ### Example : Create a certificate

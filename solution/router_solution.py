@@ -47,12 +47,12 @@ class AliceAttack(Attack):
         return msg, 2
     
     def step2(self, msg):
-        # Print, decrypt and drop message
-        print(msg)
+        # Decrypt and drop message
         
         request = msg.msg["request"]
         iv = msg.msg["iv"]
         plaintext = dhke.aes256_dhke_decrypt(self.fake_bob_dhkey, request, iv)
+        print("Request by Alice:")
         print(plaintext)
         
         return None, 3
@@ -88,12 +88,12 @@ class BobAttack(Attack):
         return msg, 2
     
     def step2(self, msg):
-        # Print, decrypt and drop message
-        print(msg)
+        # Decrypt and drop message
         
         reply = msg.msg["reply"]
         iv = msg.msg["iv"]
         plaintext = dhke.aes256_dhke_decrypt(self.fake_alice_dhkey, reply, iv)
+        print("FLAG:")
         print(plaintext)
         
         return None, 3
@@ -116,6 +116,9 @@ if __name__ == "__main__":
     
     while True:
         msg = router.listen()
+        
+        print("-"*80)
+        print(msg)
         
         if msg.source == "A":
             msg = alice_attack.handle_msg(msg)
