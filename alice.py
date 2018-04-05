@@ -4,6 +4,7 @@ import json
 import random
 import time
 import traceback
+import sys
 
 import rsa
 
@@ -68,8 +69,8 @@ class Handler(BaseRequestHandler):
             
             print("{} : {}".format(req_id, image_reply), flush=True)
         except Exception as e:
-            import traceback
             traceback.print_exc()
+            sys.stderr.flush()
             error = str(e)
             error = json.dumps({"error":error}).encode("utf-8")
             sock.send(error)
