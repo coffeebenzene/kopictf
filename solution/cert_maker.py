@@ -10,6 +10,9 @@ print("Factorise n using https://www.alpertron.com.ar/ECM.HTM")
 p = int(input("ca p:"))
 q = int(input("ca q:"))
 
+if p == q: # perfect square, totient is actually p*(p-1) so make q=p+1
+    q = (p+1)
+
 totient = (p-1) * (q-1)
 d = cert.inverse_mod(e, totient)
 

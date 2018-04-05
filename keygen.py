@@ -8,7 +8,14 @@ A_pub, A_pri = rsa.newkeys(2048)
 print("generated A's keys")
 B_pub, B_pri = rsa.newkeys(2048)
 print("generated B's keys")
-CA_pub, CA_pri = rsa.newkeys(64)
+ca_p = rsa.prime.getprime(1024)
+ca_n = ca_p**2
+ca_e = 65537
+phi = ca_p*(ca_p-1)
+ca_d = rsa.common.inverse(ca_e, phi)
+CA_pri = rsa.PrivateKey(ca_n, ca_e, ca_d, ca_p, ca_p-1)
+CA_pub = rsa.PublicKey(ca_n, ca_e)
+#CA_pub, CA_pri = rsa.newkeys(64)
 print("generated CA's keys")
 
 with open("alice.pem","wb") as f:
