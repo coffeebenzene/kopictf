@@ -7,8 +7,8 @@ e = ca_cert.rsa_pub.e
 
 print(n)
 print("Factorise n using https://www.alpertron.com.ar/ECM.HTM")
-p = int(input("ca p:"))
-q = int(input("ca q:"))
+p = int(input("ca p:").replace(" ",""))
+q = int(input("ca q:").replace(" ",""))
 
 if p == q: # perfect square, totient is actually p*(p-1) so make q=p+1
     q = (p+1)
