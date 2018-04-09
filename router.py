@@ -6,7 +6,7 @@ import router_lib
 
 # To exit router after running it, press ctrl c and wait up to 10s.
 
-CA_CERT = cert.Certificate.load("CA.crt")
+CA_CERT = cert.Certificate.load("ca.crt")
 # Example to load pem file (rsa private key)
 #with open("man.pem","rb") as f:
 #    MAN_PRI = rsa.PrivateKey.load_pkcs1(f.read())

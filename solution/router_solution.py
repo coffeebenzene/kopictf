@@ -6,7 +6,7 @@ import router_lib
 
 # To exit router after running it, press ctrl c and wait up to 10s.
 
-CA_CERT = cert.Certificate.load("CA.crt")
+CA_CERT = cert.Certificate.load("ca.crt")
 FAKE_A_CERT = cert.Certificate.load("alice2.crt")
 FAKE_B_CERT = cert.Certificate.load("bob2.crt")
 with open("man.pem","rb") as f:
